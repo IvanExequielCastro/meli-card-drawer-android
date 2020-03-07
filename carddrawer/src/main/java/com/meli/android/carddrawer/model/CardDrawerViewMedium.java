@@ -1,5 +1,6 @@
 package com.meli.android.carddrawer.model;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
@@ -67,6 +68,7 @@ public class CardDrawerViewMedium extends CardDrawerView {
         updateSecCode();
     }
 
+    @SuppressLint("VisibleForTests")
     @Override
     public void setCardTextColor(@NonNull @FontType final String fontType, @ColorInt final int fontColor) {
         cardNumber.init(resolveFontType(fontType, true), getCardNumberPlaceHolder(), fontColor);

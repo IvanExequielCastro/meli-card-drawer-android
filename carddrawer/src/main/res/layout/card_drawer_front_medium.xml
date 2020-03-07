@@ -67,6 +67,7 @@
         android:typeface = "monospace"
         android:maxLines="1"
         android:textSize="12sp"
+        android:textAllCaps="true"
         app:layout_constraintEnd_toStartOf="@+id/cho_card_number"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
