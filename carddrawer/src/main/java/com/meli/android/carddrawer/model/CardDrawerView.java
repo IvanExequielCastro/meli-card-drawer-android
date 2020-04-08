@@ -63,8 +63,8 @@ public class CardDrawerView extends FrameLayout implements Observer {
     protected ImageView cardFrontGradient;
     protected ImageView cardBackGradient;
     private ImageView overlayImage;
-    private float defaultTextSize;
-    private float defaultCardWidth;
+    protected float defaultTextSize;
+    protected float defaultCardWidth;
 
     public CardDrawerView(@NonNull final Context context) {
         this(context, null);
@@ -302,8 +302,10 @@ public class CardDrawerView extends FrameLayout implements Observer {
     public void setCardTextColor(@NonNull @FontType final String fontType, @ColorInt final int fontColor) {
         cardNumber.init(resolveFontType(fontType, true), getCardNumberPlaceHolder(), fontColor);
         cardName.init(resolveFontType(fontType, false), source.getNamePlaceHolder(), fontColor);
-        cardDate.init(resolveFontType(fontType, false), source.getExpirationPlaceHolder(), fontColor);
-        codeFront.init(resolveFontType(fontType, false), getSecCodePlaceHolder(), fontColor);
+        if (cardDate != null) {
+            cardDate.init(resolveFontType(fontType, false), source.getExpirationPlaceHolder(), fontColor);
+            codeFront.init(resolveFontType(fontType, false), getSecCodePlaceHolder(), fontColor);
+        }
     }
 
     @VisibleForTesting
@@ -320,11 +322,11 @@ public class CardDrawerView extends FrameLayout implements Observer {
     }
 
     protected String getCardNumberPlaceHolder() {
-        return NumberFormatter.INSTANCE.format("", source.getCardNumberPattern());
+        return getFormattedNumber("", source.getCardNumberPattern());
     }
 
     private String getSecCodePlaceHolder() {
-        return NumberFormatter.INSTANCE.format("", source.getSecurityCodePattern());
+        return getFormattedNumber("", source.getSecurityCodePattern());
     }
 
     @VisibleForTesting
@@ -336,7 +338,7 @@ public class CardDrawerView extends FrameLayout implements Observer {
     }
 
     protected void updateNumber() {
-        cardNumber.setText(NumberFormatter.INSTANCE.format(card.getNumber(), source.getCardNumberPattern()));
+        cardNumber.setText(getFormattedNumber(card.getNumber(), source.getCardNumberPattern()));
     }
 
     protected void updateName() {
@@ -356,7 +358,7 @@ public class CardDrawerView extends FrameLayout implements Observer {
     }
 
     protected void updateSecCode() {
-        final String secCode = NumberFormatter.INSTANCE.format(card.getSecCode(), source.getSecurityCodePattern());
+        final String secCode = getFormattedNumber(card.getSecCode(), source.getSecurityCodePattern());
 
         if (codeFront != null) {
             codeFront.setText(secCode);
@@ -442,8 +444,10 @@ public class CardDrawerView extends FrameLayout implements Observer {
         final float newTextSize = defaultTextSize * cardSizeMultiplier;
 
         cardName.setTextSize(TypedValue.COMPLEX_UNIT_PX, newTextSize);
-        cardDate.setTextSize(TypedValue.COMPLEX_UNIT_PX, newTextSize);
-        codeFront.setTextSize(TypedValue.COMPLEX_UNIT_PX, newTextSize);
+        if (cardDate != null) {
+            cardDate.setTextSize(TypedValue.COMPLEX_UNIT_PX, newTextSize);
+            codeFront.setTextSize(TypedValue.COMPLEX_UNIT_PX, newTextSize);
+        }
     }
 
     @Override
@@ -487,5 +491,9 @@ public class CardDrawerView extends FrameLayout implements Observer {
         final GradientDrawable gradientDrawable = GradientHelper.getGradientDrawable(getResources(), gradientColors);
         cardFrontGradient.setImageDrawable(gradientDrawable);
         cardBackGradient.setImageDrawable(gradientDrawable);
+    }
+
+    protected String getFormattedNumber(@NonNull final String input, @NonNull final int... pattern) {
+        return NumberFormatter.INSTANCE.format(input, pattern);
     }
 }

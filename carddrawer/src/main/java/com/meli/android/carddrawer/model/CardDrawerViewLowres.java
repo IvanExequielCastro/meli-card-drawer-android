@@ -4,11 +4,11 @@ import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
 import android.util.AttributeSet;
-import android.view.animation.Animation;
-import android.widget.ImageSwitcher;
-import android.widget.ImageView;
+import android.util.TypedValue;
 import com.meli.android.carddrawer.R;
+import com.meli.android.carddrawer.format.NumberFormatter;
 
 public class CardDrawerViewLowres extends CardDrawerView {
 
@@ -32,31 +32,35 @@ public class CardDrawerViewLowres extends CardDrawerView {
     }
 
     @Override
-    protected void updateIssuerLogo(final ImageSwitcher issuerLogoView, @NonNull final CardUI source,
-        final boolean animate) {
-        //No issuer logo on low res.
+    @VisibleForTesting
+    protected void updateCardInformation() {
+        updateNumber();
+        updateName();
+        updateSecCode();
     }
 
     @Override
-    protected void setupImageSwitcher(@NonNull final ImageSwitcher imageSwitcher, @NonNull final Animation fadeIn,
-        @NonNull final Animation fadeOut) {
-        super.setupImageSwitcher(imageSwitcher, fadeIn, fadeOut);
-        fadeOut.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(final Animation animation) {
-                //Nothing to do here
-            }
+    protected String getFormattedNumber(@NonNull final String input, @NonNull final int... pattern) {
+        return NumberFormatter.INSTANCE.formatShort(input, pattern);
+    }
 
-            @Override
-            public void onAnimationEnd(final Animation animation) {
-                final ImageView imageView = (ImageView) imageSwitcher.getNextView();
-                imageView.setImageResource(0);
-            }
+    @Override
+    protected void onSizeChanged(final int w, final int h, final int oldw, final int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
 
-            @Override
-            public void onAnimationRepeat(final Animation animation) {
-                //Nothing to do here
-            }
-        });
+        final float cardSizeMultiplier = (float) cardFrontLayout.getMeasuredWidth() / defaultCardWidth;
+        final float newTextSize = defaultTextSize * cardSizeMultiplier;
+
+        cardNumber.setTextSize(TypedValue.COMPLEX_UNIT_PX, newTextSize);
+    }
+
+    @Override
+    public void hideSecCircle() {
+        //Nothing to do here
+    }
+
+    @Override
+    public void showSecCircle() {
+        //Nothing to do here
     }
 }

@@ -110,9 +110,4 @@ public class CardDrawerViewMedium extends CardDrawerView {
     public void hideSecCircle() {
         //nothing to do here
     }
-
-    @Override
-    protected void onSizeChanged(final int w, final int h, final int oldw, final int oldh) {
-        //TODO: remove this when autosize for texts is supported.
-    }
 }
